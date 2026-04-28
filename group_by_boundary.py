@@ -2,7 +2,7 @@
 group_by_boundary
 
 Prompts for one or more closed boundary curves, then groups each boundary with
-every other document curve whose sampled points all fall inside it. Open curves
+every other document curve whose sampled points all fall inside or on it. Open curves
 in the selection are ignored. Creates one named Rhino group per boundary.
 """
 
@@ -30,7 +30,7 @@ def is_curve_inside_boundary(curve_id, boundary_id):
             result = rs.PointInPlanarClosedCurve(pt, boundary_id)
         except Exception:
             return False
-        if result != 1:
+        if result == 0:
             return False
     return True
 
