@@ -73,6 +73,8 @@ def create_luid_text():
         if text_id:
             curves = rs.ExplodeText(text_id, delete=True)
             if curves:
+                group_name = rs.AddGroup()
+                rs.AddObjectsToGroup(curves, group_name)
                 all_curves.extend(curves)
 
     if all_curves:
