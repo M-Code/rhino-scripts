@@ -18,7 +18,6 @@ Configurable:
 import ctypes
 import Rhino
 import Rhino.UI
-import Rhino.Display
 import rhinoscriptsyntax as rs
 import scriptcontext as sc
 import Eto.Forms as forms
@@ -55,6 +54,10 @@ class TankHighlightConduit(Rhino.Display.DisplayConduit):
     def __init__(self):
         super().__init__()
         self.tracked_guids = set()
+        self._mat = Rhino.Display.DisplayMaterial()
+        self._mat.Diffuse = System.Drawing.Color.FromArgb(200, 50, 50)
+        self._mat.Transparency = 0.5
+        self._wire_color = System.Drawing.Color.Red
 
     def CalculateBoundingBox(self, e):
         for guid in self.tracked_guids:
@@ -63,15 +66,11 @@ class TankHighlightConduit(Rhino.Display.DisplayConduit):
                 e.IncludeBoundingBox(obj.Geometry.GetBoundingBox(False))
 
     def PostDrawObjects(self, e):
-        mat = Rhino.Display.DisplayMaterial()
-        mat.Diffuse = System.Drawing.Color.FromArgb(200, 50, 50)
-        mat.Transparency = 0.5
-        red = System.Drawing.Color.Red
         for guid in self.tracked_guids:
             obj = sc.doc.Objects.FindId(guid)
             if obj is not None and isinstance(obj.Geometry, Rhino.Geometry.Brep):
-                e.Display.DrawBrepShaded(obj.Geometry, mat)
-                e.Display.DrawBrepWires(obj.Geometry, red, -1)
+                e.Display.DrawBrepShaded(obj.Geometry, self._mat)
+                e.Display.DrawBrepWires(obj.Geometry, self._wire_color, -1)
 
 
 class TankVolumeDialog(forms.Form):
@@ -138,7 +137,7 @@ class TankVolumeDialog(forms.Form):
         self._ullage_field.DecimalPlaces = 1
         self._ullage_field.Value = 5
         self._ullage_field.Width = 58
-        self._ullage_field.ValueChanged += self.on_ullage_changed
+        self._ullage_field.ValueChanged += lambda s, e: self._refresh_ullage()
         self._ullage_gal_label = forms.Label()
         self._ullage_gal_label.Text = "0.000 gal"
         self._ullage_gal_label.TextColor = hdr_color
@@ -267,9 +266,6 @@ class TankVolumeDialog(forms.Form):
         self._conduit.tracked_guids.clear()
         self._conduit.Enabled = False
         self.update_display()
-
-    def on_ullage_changed(self, sender, e):
-        self._refresh_ullage()
 
     def on_close_clicked(self, sender, e):
         self._allow_close = True
