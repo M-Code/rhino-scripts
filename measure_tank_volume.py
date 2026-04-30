@@ -113,6 +113,29 @@ class TankVolumeDialog(forms.Dialog[bool]):
         layout.AddRow(close_row)
         self.Content = layout
 
+        preselected = rs.SelectedObjects() or []
+        if preselected:
+            self._add_guids(preselected)
+            self.update_display()
+
+    def _add_guids(self, guids):
+        invalid = 0
+        for guid in guids:
+            if guid in self._volumes:
+                continue
+            brep = rs.coercebrep(guid)
+            if brep is None or not brep.IsSolid:
+                invalid += 1
+                continue
+            vol = compute_volume_gallons(brep)
+            if vol is not None:
+                self._objects.append(guid)
+                self._volumes[guid] = vol
+                self._orig_colors[guid] = (rs.ObjectColor(guid), rs.ObjectColorSource(guid))
+                rs.ObjectColorSource(guid, 1)
+                rs.ObjectColor(guid, (255, 0, 0))
+        return invalid
+
     def on_add_clicked(self, sender, e):
         self.Visible = False
 
@@ -125,21 +148,8 @@ class TankVolumeDialog(forms.Dialog[bool]):
 
         invalid = 0
         if res == Rhino.Input.GetResult.Object:
-            for i in range(go.ObjectCount):
-                ref = go.Object(i)
-                brep = ref.Brep()
-                guid = ref.ObjectId
-                if brep is None or not brep.IsSolid:
-                    invalid += 1
-                    continue
-                if guid not in self._volumes:
-                    vol = compute_volume_gallons(brep)
-                    if vol is not None:
-                        self._objects.append(guid)
-                        self._volumes[guid] = vol
-                        self._orig_colors[guid] = (rs.ObjectColor(guid), rs.ObjectColorSource(guid))
-                        rs.ObjectColorSource(guid, 1)
-                        rs.ObjectColor(guid, (255, 0, 0))
+            guids = [go.Object(i).ObjectId for i in range(go.ObjectCount)]
+            invalid = self._add_guids(guids)
 
         self.Visible = True
         self.BringToFront()
