@@ -31,7 +31,7 @@ def compute_volume_gallons(brep):
     return vmp.Volume * (scale ** 3) / CUBIC_INCHES_PER_GALLON
 
 
-class TankVolumeDialog(forms.Dialog[bool]):
+class TankVolumeDialog(forms.Form):
 
     def __init__(self):
         super().__init__()
@@ -45,6 +45,7 @@ class TankVolumeDialog(forms.Dialog[bool]):
         self.Resizable = False
         self.ClientSize = drawing.Size(290, 250)
         self.Closing += self.on_window_closing
+        self.Closed += self.on_window_closed
 
         # object count
         self._count_label = forms.Label()
@@ -93,7 +94,6 @@ class TankVolumeDialog(forms.Dialog[bool]):
         close_btn = forms.Button()
         close_btn.Text = "Close"
         close_btn.Click += self.on_close_clicked
-        self.AbortButton = close_btn
 
         close_row = forms.StackLayout()
         close_row.Orientation = forms.Orientation.Horizontal
@@ -166,6 +166,10 @@ class TankVolumeDialog(forms.Dialog[bool]):
         if not self._allow_close:
             e.Cancel = True
 
+    def on_window_closed(self, sender, e):
+        if "tank_volume_dialog" in sc.sticky:
+            del sc.sticky["tank_volume_dialog"]
+
     def on_clear_clicked(self, sender, e):
         self._restore_colors()
         self._objects = []
@@ -178,7 +182,7 @@ class TankVolumeDialog(forms.Dialog[bool]):
     def on_close_clicked(self, sender, e):
         self._restore_colors()
         self._allow_close = True
-        self.Close(True)
+        self.Close()
 
     def update_display(self):
         n = len(self._objects)
@@ -209,8 +213,17 @@ class TankVolumeDialog(forms.Dialog[bool]):
 
 
 def main():
-    dialog = TankVolumeDialog()
-    Rhino.UI.EtoExtensions.ShowSemiModal(dialog, sc.doc, Rhino.UI.RhinoEtoApp.MainWindow)
+    if "tank_volume_dialog" in sc.sticky:
+        dlg = sc.sticky["tank_volume_dialog"]
+        if not dlg.IsDisposed:
+            dlg.BringToFront()
+            return
+        del sc.sticky["tank_volume_dialog"]
+
+    dlg = TankVolumeDialog()
+    dlg.Owner = Rhino.UI.RhinoEtoApp.MainWindow
+    dlg.Show()
+    sc.sticky["tank_volume_dialog"] = dlg
 
 
 if __name__ == "__main__":
