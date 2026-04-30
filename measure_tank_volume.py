@@ -37,6 +37,7 @@ class TankVolumeDialog(forms.Dialog[bool]):
         super().__init__()
         self._objects = []
         self._volumes = {}
+        self._orig_colors = {}  # GUID -> (color, color_source) for restore on close/clear
         self._allow_close = False
 
         self.Title = "Tank Volume"
@@ -136,6 +137,9 @@ class TankVolumeDialog(forms.Dialog[bool]):
                     if vol is not None:
                         self._objects.append(guid)
                         self._volumes[guid] = vol
+                        self._orig_colors[guid] = (rs.ObjectColor(guid), rs.ObjectColorSource(guid))
+                        rs.ObjectColorSource(guid, 1)
+                        rs.ObjectColor(guid, (255, 0, 0))
 
         self.Visible = True
         self.BringToFront()
@@ -153,6 +157,7 @@ class TankVolumeDialog(forms.Dialog[bool]):
             e.Cancel = True
 
     def on_clear_clicked(self, sender, e):
+        self._restore_colors()
         self._objects = []
         self._volumes = {}
         self.update_display()
@@ -161,6 +166,7 @@ class TankVolumeDialog(forms.Dialog[bool]):
         self._refresh_ullage()
 
     def on_close_clicked(self, sender, e):
+        self._restore_colors()
         self._allow_close = True
         self.Close(True)
 
@@ -174,12 +180,14 @@ class TankVolumeDialog(forms.Dialog[bool]):
             self._count_label.Text = "{} polysurfaces added".format(n)
         self._total_label.Text = "{:.3f} gal".format(sum(self._volumes.values()))
         self._refresh_ullage()
-        self._highlight_objects()
+        sc.doc.Views.Redraw()
 
-    def _highlight_objects(self):
-        rs.UnselectAllObjects()
-        if self._objects:
-            rs.SelectObjects(self._objects)
+    def _restore_colors(self):
+        for guid, (col, src) in self._orig_colors.items():
+            if rs.IsObject(guid):
+                rs.ObjectColor(guid, col)
+                rs.ObjectColorSource(guid, src)
+        self._orig_colors = {}
         sc.doc.Views.Redraw()
 
     def _refresh_ullage(self):
