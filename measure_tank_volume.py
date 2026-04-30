@@ -38,11 +38,16 @@ def compute_volume_gallons(brep):
 
 
 def _hide_close_button():
-    hwnd = ctypes.windll.user32.FindWindowW(None, "Tank Volume")
+    user32 = ctypes.windll.user32
+    user32.FindWindowW.restype = ctypes.c_void_p
+    user32.GetActiveWindow.restype = ctypes.c_void_p
+    user32.GetSystemMenu.restype = ctypes.c_void_p
+    hwnd = user32.FindWindowW(None, "Tank Volume") or user32.GetActiveWindow()
     if hwnd:
-        hmenu = ctypes.windll.user32.GetSystemMenu(hwnd, False)
-        ctypes.windll.user32.DeleteMenu(hmenu, 0xF060, 0)
-        ctypes.windll.user32.DrawMenuBar(hwnd)
+        hmenu = user32.GetSystemMenu(hwnd, False)
+        if hmenu:
+            user32.DeleteMenu(hmenu, 0xF060, 0)
+            user32.DrawMenuBar(hwnd)
 
 
 class TankHighlightConduit(Rhino.Display.DisplayConduit):
@@ -80,7 +85,7 @@ class TankVolumeDialog(forms.Form):
         self.Title = "Tank Volume"
         self.Padding = drawing.Padding(12)
         self.Resizable = False
-        self.ClientSize = drawing.Size(290, 250)
+        self.ClientSize = drawing.Size(240, 290)
         self.Closing += self.on_window_closing
         self.Closed += self.on_window_closed
 
@@ -91,6 +96,9 @@ class TankVolumeDialog(forms.Form):
         self._conduit.Enabled = False
 
         Rhino.RhinoDoc.ReplaceRhinoObject += self._on_replace_object
+
+        val_font = drawing.Font(drawing.SystemFont.Bold, 13)
+        hdr_color = drawing.Colors.Gray
 
         # object count
         self._count_label = forms.Label()
@@ -111,29 +119,47 @@ class TankVolumeDialog(forms.Form):
         btn_row.Items.Add(forms.StackLayoutItem(add_btn, False))
         btn_row.Items.Add(forms.StackLayoutItem(clear_btn, False))
 
-        # volume readouts
-        total_lbl = forms.Label()
-        total_lbl.Text = "Total Volume:"
+        # total volume (stacked: header above large value)
+        total_hdr = forms.Label()
+        total_hdr.Text = "Total Volume"
+        total_hdr.TextColor = hdr_color
         self._total_label = forms.Label()
         self._total_label.Text = "0.000 gal"
+        self._total_label.Font = val_font
 
+        # ullage (all on one line: label + stepper + % + spacer + result)
         ullage_lbl = forms.Label()
-        ullage_lbl.Text = "Ullage (%):"
+        ullage_lbl.Text = "Ullage"
+        pct_lbl = forms.Label()
+        pct_lbl.Text = "%"
         self._ullage_field = forms.NumericStepper()
         self._ullage_field.MinValue = 0
         self._ullage_field.MaxValue = 100
         self._ullage_field.DecimalPlaces = 1
         self._ullage_field.Value = 5
-        self._ullage_field.Width = 70
+        self._ullage_field.Width = 58
         self._ullage_field.ValueChanged += self.on_ullage_changed
-
         self._ullage_gal_label = forms.Label()
-        self._ullage_gal_label.Text = "= 0.000 gal"
+        self._ullage_gal_label.Text = "0.000 gal"
+        self._ullage_gal_label.TextColor = hdr_color
 
-        net_lbl = forms.Label()
-        net_lbl.Text = "Net Volume:"
+        ullage_row = forms.StackLayout()
+        ullage_row.Orientation = forms.Orientation.Horizontal
+        ullage_row.Spacing = 5
+        ullage_row.VerticalContentAlignment = forms.VerticalAlignment.Center
+        ullage_row.Items.Add(forms.StackLayoutItem(ullage_lbl, False))
+        ullage_row.Items.Add(forms.StackLayoutItem(self._ullage_field, False))
+        ullage_row.Items.Add(forms.StackLayoutItem(pct_lbl, False))
+        ullage_row.Items.Add(forms.StackLayoutItem(None, True))
+        ullage_row.Items.Add(forms.StackLayoutItem(self._ullage_gal_label, False))
+
+        # net volume (stacked: header above large value)
+        net_hdr = forms.Label()
+        net_hdr.Text = "Net Volume"
+        net_hdr.TextColor = hdr_color
         self._net_label = forms.Label()
         self._net_label.Text = "0.000 gal"
+        self._net_label.Font = val_font
 
         # close button
         close_btn = forms.Button()
@@ -146,14 +172,17 @@ class TankVolumeDialog(forms.Form):
         close_row.Items.Add(forms.StackLayoutItem(close_btn, False))
 
         layout = forms.DynamicLayout()
-        layout.DefaultSpacing = drawing.Size(8, 6)
+        layout.DefaultSpacing = drawing.Size(6, 6)
         layout.AddRow(self._count_label)
         layout.AddRow(btn_row)
         layout.AddRow(None)
-        layout.AddRow(total_lbl, self._total_label)
-        layout.AddRow(ullage_lbl, self._ullage_field)
-        layout.AddRow(None, self._ullage_gal_label)
-        layout.AddRow(net_lbl, self._net_label)
+        layout.AddRow(total_hdr)
+        layout.AddRow(self._total_label)
+        layout.AddRow(None)
+        layout.AddRow(ullage_row)
+        layout.AddRow(None)
+        layout.AddRow(net_hdr)
+        layout.AddRow(self._net_label)
         layout.AddRow(None)
         layout.AddRow(close_row)
         self.Content = layout
@@ -262,7 +291,7 @@ class TankVolumeDialog(forms.Form):
         total = sum(self._volumes.values())
         pct = max(0.0, min(100.0, float(self._ullage_field.Value)))
         ullage_gal = total * (pct / 100.0)
-        self._ullage_gal_label.Text = "= {:.3f} gal".format(ullage_gal)
+        self._ullage_gal_label.Text = "{:.3f} gal".format(ullage_gal)
         self._net_label.Text = "{:.3f} gal".format(total - ullage_gal)
 
 
