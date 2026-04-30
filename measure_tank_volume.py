@@ -2,22 +2,28 @@
 """
 measure_tank_volume
 
-Semi-modal dialog for measuring fuel tank capacity. Add closed polysurfaces
+Modeless dialog for measuring fuel tank capacity. Add closed polysurfaces
 representing tank geometry to see their combined volume in US gallons. Enter
 a ullage percentage to calculate net usable capacity.
 
-Dialog stays open while navigating the Rhino viewport. Requires Rhino 7+.
+Dialog stays open while navigating the Rhino viewport and does not interfere
+with running other Rhino commands. Volume updates live when tracked geometry
+is modified. Objects are highlighted in red via a display conduit — no object
+properties are changed. Requires Rhino 7+.
 
 Configurable:
     CUBIC_INCHES_PER_GALLON  volume conversion factor (231.0 for US gallons,
                              277.42 for Imperial gallons)
 """
+import ctypes
 import Rhino
 import Rhino.UI
+import Rhino.Display
 import rhinoscriptsyntax as rs
 import scriptcontext as sc
 import Eto.Forms as forms
 import Eto.Drawing as drawing
+import System.Drawing
 
 
 CUBIC_INCHES_PER_GALLON = 231.0  # configurable — use 277.42 for Imperial gallons
@@ -31,13 +37,44 @@ def compute_volume_gallons(brep):
     return vmp.Volume * (scale ** 3) / CUBIC_INCHES_PER_GALLON
 
 
+def _hide_close_button():
+    hwnd = ctypes.windll.user32.FindWindowW(None, "Tank Volume")
+    if hwnd:
+        hmenu = ctypes.windll.user32.GetSystemMenu(hwnd, False)
+        ctypes.windll.user32.DeleteMenu(hmenu, 0xF060, 0)
+        ctypes.windll.user32.DrawMenuBar(hwnd)
+
+
+class TankHighlightConduit(Rhino.Display.DisplayConduit):
+
+    def __init__(self):
+        super().__init__()
+        self.tracked_guids = set()
+
+    def CalculateBoundingBox(self, e):
+        for guid in self.tracked_guids:
+            obj = sc.doc.Objects.FindId(guid)
+            if obj is not None and isinstance(obj.Geometry, Rhino.Geometry.Brep):
+                e.IncludeBoundingBox(obj.Geometry.GetBoundingBox(False))
+
+    def PostDrawObjects(self, e):
+        mat = Rhino.Display.DisplayMaterial()
+        mat.Diffuse = System.Drawing.Color.FromArgb(200, 50, 50)
+        mat.Transparency = 0.5
+        red = System.Drawing.Color.Red
+        for guid in self.tracked_guids:
+            obj = sc.doc.Objects.FindId(guid)
+            if obj is not None and isinstance(obj.Geometry, Rhino.Geometry.Brep):
+                e.Display.DrawBrepShaded(obj.Geometry, mat)
+                e.Display.DrawBrepWires(obj.Geometry, red, -1)
+
+
 class TankVolumeDialog(forms.Form):
 
     def __init__(self):
         super().__init__()
         self._objects = []
         self._volumes = {}
-        self._orig_colors = {}  # GUID -> (color, color_source) for restore on close/clear
         self._allow_close = False
 
         self.Title = "Tank Volume"
@@ -46,6 +83,14 @@ class TankVolumeDialog(forms.Form):
         self.ClientSize = drawing.Size(290, 250)
         self.Closing += self.on_window_closing
         self.Closed += self.on_window_closed
+
+        if "tank_volume_conduit" not in sc.sticky:
+            sc.sticky["tank_volume_conduit"] = TankHighlightConduit()
+        self._conduit = sc.sticky["tank_volume_conduit"]
+        self._conduit.tracked_guids = set()
+        self._conduit.Enabled = False
+
+        Rhino.RhinoDoc.ReplaceRhinoObject += self._on_replace_object
 
         # object count
         self._count_label = forms.Label()
@@ -131,10 +176,23 @@ class TankVolumeDialog(forms.Form):
             if vol is not None:
                 self._objects.append(guid)
                 self._volumes[guid] = vol
-                self._orig_colors[guid] = (rs.ObjectColor(guid), rs.ObjectColorSource(guid))
-                rs.ObjectColorSource(guid, 1)
-                rs.ObjectColor(guid, (255, 0, 0))
+        self._conduit.tracked_guids = set(self._objects)
+        self._conduit.Enabled = bool(self._objects)
         return invalid
+
+    def _on_replace_object(self, sender, e):
+        guid = e.ObjectId
+        if guid not in self._volumes:
+            return
+        new_obj = e.NewRhinoObject
+        if new_obj is None:
+            return
+        brep = new_obj.Geometry
+        if isinstance(brep, Rhino.Geometry.Brep) and brep.IsSolid:
+            vol = compute_volume_gallons(brep)
+            if vol is not None:
+                self._volumes[guid] = vol
+                self.update_display()
 
     def on_add_clicked(self, sender, e):
         self.Visible = False
@@ -167,20 +225,24 @@ class TankVolumeDialog(forms.Form):
             e.Cancel = True
 
     def on_window_closed(self, sender, e):
+        Rhino.RhinoDoc.ReplaceRhinoObject -= self._on_replace_object
+        self._conduit.tracked_guids.clear()
+        self._conduit.Enabled = False
+        sc.doc.Views.Redraw()
         if "tank_volume_dialog" in sc.sticky:
             del sc.sticky["tank_volume_dialog"]
 
     def on_clear_clicked(self, sender, e):
-        self._restore_colors()
         self._objects = []
         self._volumes = {}
+        self._conduit.tracked_guids.clear()
+        self._conduit.Enabled = False
         self.update_display()
 
     def on_ullage_changed(self, sender, e):
         self._refresh_ullage()
 
     def on_close_clicked(self, sender, e):
-        self._restore_colors()
         self._allow_close = True
         self.Close()
 
@@ -194,14 +256,6 @@ class TankVolumeDialog(forms.Form):
             self._count_label.Text = "{} polysurfaces added".format(n)
         self._total_label.Text = "{:.3f} gal".format(sum(self._volumes.values()))
         self._refresh_ullage()
-        sc.doc.Views.Redraw()
-
-    def _restore_colors(self):
-        for guid, (col, src) in self._orig_colors.items():
-            if rs.IsObject(guid):
-                rs.ObjectColor(guid, col)
-                rs.ObjectColorSource(guid, src)
-        self._orig_colors = {}
         sc.doc.Views.Redraw()
 
     def _refresh_ullage(self):
@@ -224,6 +278,7 @@ def main():
     dlg.Owner = Rhino.UI.RhinoEtoApp.MainWindow
     dlg.Show()
     sc.sticky["tank_volume_dialog"] = dlg
+    _hide_close_button()
 
 
 if __name__ == "__main__":
