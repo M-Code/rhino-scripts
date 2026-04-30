@@ -299,6 +299,13 @@ def main():
             return
         del sc.sticky["tank_volume_dialog"]
 
+    go = Rhino.Input.Custom.GetObject()
+    go.SetCommandPrompt("Select closed polysurfaces for tank volume (Enter to open empty)")
+    go.GeometryFilter = Rhino.DocObjects.ObjectType.Brep
+    go.EnablePreSelect(True, True)
+    go.SubObjectSelect = False
+    go.GetMultiple(0, 0)
+
     dlg = TankVolumeDialog()
     dlg.Owner = Rhino.UI.RhinoEtoApp.MainWindow
     dlg.Show()
