@@ -37,11 +37,13 @@ class TankVolumeDialog(forms.Dialog[bool]):
         super().__init__()
         self._objects = []
         self._volumes = {}
+        self._allow_close = False
 
         self.Title = "Tank Volume"
         self.Padding = drawing.Padding(12)
         self.Resizable = False
         self.ClientSize = drawing.Size(290, 250)
+        self.Closing += self.on_window_closing
 
         # object count
         self._count_label = forms.Label()
@@ -74,7 +76,7 @@ class TankVolumeDialog(forms.Dialog[bool]):
         self._ullage_field.MinValue = 0
         self._ullage_field.MaxValue = 100
         self._ullage_field.DecimalPlaces = 1
-        self._ullage_field.Value = 0
+        self._ullage_field.Value = 5
         self._ullage_field.Width = 70
         self._ullage_field.ValueChanged += self.on_ullage_changed
 
@@ -146,6 +148,10 @@ class TankVolumeDialog(forms.Dialog[bool]):
             )
         self.update_display()
 
+    def on_window_closing(self, sender, e):
+        if not self._allow_close:
+            e.Cancel = True
+
     def on_clear_clicked(self, sender, e):
         self._objects = []
         self._volumes = {}
@@ -155,6 +161,7 @@ class TankVolumeDialog(forms.Dialog[bool]):
         self._refresh_ullage()
 
     def on_close_clicked(self, sender, e):
+        self._allow_close = True
         self.Close(True)
 
     def update_display(self):
@@ -167,6 +174,13 @@ class TankVolumeDialog(forms.Dialog[bool]):
             self._count_label.Text = "{} polysurfaces added".format(n)
         self._total_label.Text = "{:.3f} gal".format(sum(self._volumes.values()))
         self._refresh_ullage()
+        self._highlight_objects()
+
+    def _highlight_objects(self):
+        rs.UnselectAllObjects()
+        if self._objects:
+            rs.SelectObjects(self._objects)
+        sc.doc.Views.Redraw()
 
     def _refresh_ullage(self):
         total = sum(self._volumes.values())
