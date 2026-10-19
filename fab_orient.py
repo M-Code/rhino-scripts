@@ -16,11 +16,11 @@ from Rhino.Input import GetResult, RhinoGet
 from Rhino.DocObjects import ObjectType, ObjectColorSource
 from Rhino.Commands import Result
 
-FAB_LAYER   = "05 - Fab 3D"                            # configurable
-RED         = System.Drawing.Color.FromArgb(255, 0, 0)  # configurable
-INK_LAYER   = "07 - Ink Lines"                          # configurable
-MARK_LAYER  = "06 - 2D Geo::Mark"                       # configurable
-EDGE_ON_TOL = 0.05                                      # configurable
+FAB_LAYER   = "05 - Fab 3D"                            # configurable: full layer path; sublayer = "Parent::Fab 3D"
+RED         = System.Drawing.Color.FromArgb(255, 0, 0)  # configurable: "processed" color on original
+INK_LAYER   = "07 - Ink Lines"                          # configurable: mark curves drawn on the 3D part (exact layer, no sublayers)
+MARK_LAYER  = "06 - 2D Geo::Mark"                       # configurable: oriented copies of ink curves go here
+EDGE_ON_TOL = 0.05                                      # configurable: |view dir Z| below this = view is edge-on to XY
 
 CANCEL, NEXT = 0, 1
 

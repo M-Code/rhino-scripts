@@ -78,16 +78,16 @@ import scriptcontext as sc
 import rhinoscriptsyntax as rs
 import math
 
-VERSION              = "v2.2"
-TOLERANCE            = None       # configurable: None uses document absolute tolerance
-PASS_LINEAR_TOL_IN   = 1.0 / 32.0  # configurable
-FAB_AREA_REL_TOL     = 1.5e-2     # configurable
-FAB_VOL_REL_TOL      = 1.5e-2     # configurable
-FAB_MOMENT_REL_TOL   = 2.5e-2     # configurable
-IDENT_AREA_REL_TOL   = 1.0e-3     # configurable
-IDENT_VOL_REL_TOL    = 1.0e-3     # configurable
-IDENT_MOMENT_REL_TOL = 1.0e-3     # configurable
-EDGE_SAMPLES         = 24         # configurable
+VERSION              = "v2.2"     # printed in title + report so you can confirm the code that ran
+TOLERANCE            = None       # configurable: positional identity tol, MODEL units; None => document absolute tolerance
+PASS_LINEAR_TOL_IN   = 1.0 / 32.0  # configurable: fab linear accept (inches); e.g. 1.0/16.0, 1.0/8.0 to retune
+FAB_AREA_REL_TOL     = 1.5e-2     # configurable: fab band, 1.5% area
+FAB_VOL_REL_TOL      = 1.5e-2     # configurable: fab band, 1.5% volume
+FAB_MOMENT_REL_TOL   = 2.5e-2     # configurable: fab band, 2.5% inertia
+IDENT_AREA_REL_TOL   = 1.0e-3     # configurable: identity band, 0.1% area
+IDENT_VOL_REL_TOL    = 1.0e-3     # configurable: identity band, 0.1% volume
+IDENT_MOMENT_REL_TOL = 1.0e-3     # configurable: identity band, 0.1% inertia
+EDGE_SAMPLES         = 24         # configurable: arc-length division points sampled per edge (strict path)
 TITLE                = "Part Comparison " + VERSION
 
 

@@ -17,11 +17,11 @@ from Rhino.Input import GetResult
 from Rhino.DocObjects import (ObjectType, ObjectAttributes, DimensionStyle, Font,
                               TextHorizontalAlignment, TextVerticalAlignment)
 
-OUTSIDE_LAYER  = "06 - 2D Geo::Outside cut"   # configurable
-INSIDE_LAYER   = "06 - 2D Geo::Inside cut"    # configurable
-MARK_LAYER     = "06 - 2D Geo::Mark"          # configurable
-TEXT_FONT      = "MecSoft_Font 1"             # configurable
-LUID_HEIGHT_IN = 1                            # configurable
+OUTSIDE_LAYER  = "06 - 2D Geo::Outside cut"   # configurable: outer profile (full layer path)
+INSIDE_LAYER   = "06 - 2D Geo::Inside cut"    # configurable: holes / cutouts
+MARK_LAYER     = "06 - 2D Geo::Mark"          # configurable: luid text
+TEXT_FONT      = "MecSoft_Font 1"             # configurable: searched in installed fonts (_/space and case ignored)
+LUID_HEIGHT_IN = 1                            # configurable: luid text height (in)
 
 
 def log(msg):

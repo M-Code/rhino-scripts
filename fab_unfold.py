@@ -22,17 +22,17 @@ from Rhino.Geometry import Polyline
 from Rhino.DocObjects import (ObjectType, ObjectAttributes, Font, DimensionStyle,
                               TextHorizontalAlignment, TextVerticalAlignment)
 
-BEND_LAYER     = "06 - 2D Geo::Mark"          # configurable
-OUTSIDE_LAYER  = "06 - 2D Geo::Outside cut"   # configurable
-INSIDE_LAYER   = "06 - 2D Geo::Inside cut"    # configurable
-TEXT_FONT      = "MecSoft_Font 1"             # configurable
-TEXT_HEIGHT_IN = 1.0                          # configurable
-SPLIT_OVER_IN  = 10.0                         # configurable
-SPLIT_KEEP_IN  = 4.0                          # configurable
-DIAMOND_LEN_IN = 1.4375                       # configurable
-DIAMOND_WID_IN = 0.625                        # configurable
-TEXT_GAP_IN    = 1.0                          # configurable
-LUID_HEIGHT_IN = 1.0                          # configurable
+BEND_LAYER     = "06 - 2D Geo::Mark"          # configurable: bend lines + UP/DW text (full layer path)
+OUTSIDE_LAYER  = "06 - 2D Geo::Outside cut"   # configurable: outer profile
+INSIDE_LAYER   = "06 - 2D Geo::Inside cut"    # configurable: holes / cutouts
+TEXT_FONT      = "MecSoft_Font 1"             # configurable: searched in installed fonts (_/space and case ignored)
+TEXT_HEIGHT_IN = 1.0                          # configurable: inches
+SPLIT_OVER_IN  = 10.0                         # configurable: bend lines longer than this (in) ...
+SPLIT_KEEP_IN  = 4.0                          # configurable: ... draw only this much (in) at each end
+DIAMOND_LEN_IN = 1.4375                       # configurable: bend diamond length along line (1 7/16")
+DIAMOND_WID_IN = 0.625                        # configurable: bend diamond width across line (5/8")
+TEXT_GAP_IN    = 1.0                          # configurable: gap between diamond tip and text (in)
+LUID_HEIGHT_IN = 1.0                          # configurable: part luid text height (in), placed at flat's area centroid
 
 FINISH = "finish"
 FONT_NAME = None  # resolved at startup from TEXT_FONT
