@@ -1,0 +1,159 @@
+﻿Z '_Zoom
+ZE '_Zoom _Extents
+ZT '_Zoom _Target
+ZEA '_Zoom _All _Extents
+ZS '_Zoom _Selected
+ZSA '_Zoom _All _Selected
+S scale1d
+O offset
+P _point
+M ! _Move
+U _Undo
+POn ! _PointsOn
+POff ! _PointsOff
+C _circle
+W _ToggleLeftSidebar
+PlugInManager ! _OptionsPage _PlugIns
+AdvancedDisplay ! _OptionsPage _DisplayModes
+DisplayAttrsMgr ! _OptionsPage _DisplayModes
+Break ! _DeleteSubCrv
+SelPolysurface '_SelPolysrf
+Q _Length
+d dim
+mf moveface
+l line
+e extrudecrv
+t trim
+bm blockmanager
+bu _booleanunion
+sa saveas
+bs booleansplit
+se _ScriptEditor
+sc selcolor
+g group
+h hide
+sn selname
+r rectangle p
+mi mirror
+pl plane p
+n nameobjects
+f _NoEcho ! -_Layer _Current Dimensions _EnterEnd _Dim _Pause _Pause 1/4"
+ff _NoEcho ! -_Layer _Current Dimensions _EnterEnd _Dim _Pause _Pause 1/2"
+dd dimdiameter
+sd SetDisplayMode _m
+ss showselected
+ug ungroup
+da dimaligned
+sca scale
+v volume
+doc documentproperties
+sz setzto0
+i isolate
+dw dotwithdata
+hd hideindetail
+ssd showselectedindetail
+sh show
+cs sdScale
+ssid showselectedindetail
+zw zoomwindow
+o3 orient3pt
+te text
+uls unlockselected
+r3 rotate3d
+ex explode
+ihd invert _hideindetail
+al ArrayLinear
+gh grasshopper
+mh movehole
+eb _ExplodeBlock
+bum _BooleanUnion _MergeAllCoplanarFaces
+ro _Rotate
+dx _distribute _x
+dy _distribute _y
+dz _distribute _z
+ep _EditPythonScript
+fe '_filletedge
+ap '_align _p _p
+sb '_subdbox _p
+vp '_setview _world _perspective
+vt '_setview _world _top
+GR '_gumballrelocate
+rp '_runpythonscript
+ah '_arrowhead
+vc '_ViewCaptureToFile
+bb !_BoundingBox
+ic '_InterpCrv
+ps planarsrf
+SL _SelLast
+os offsetsrf
+es extendsrf
+cl _-RunPythonScript "C:\Dev\rhino-scripts\collapse_layers.py"
+ac autoaligncplane _enabled
+db dupborder
+de DupEdge
+ix intersect
+ad DimAngle
+so SetObjectDisplayMode _m
+be blockedit
+ed extenddynamic
+pp pushpull
+pc _projecttocplane
+cp _ClippingPlane
+to _TextObject
+us _UnlockSelected
+a _Angle _t
+sv _setview
+mv _move _vertical _pause 0
+cc _CloseCrv
+ce _CrvEnd
+Ww _ToggleRightSidebar
+s2 _Sweep2
+s1 _Sweep1
+gv _setdisplaymode _ghosted
+is _intersect
+wv _setdisplaymode _wireframe
+rv '_setdisplaymode _rendered
+rav _setdisplaymode _raytraced
+mei '_meshintersect
+tv '_setdisplaymode _technical
+pv '_setdisplaymode _pen
+mx '_mirror _x
+miy '_mirror _y
+miz '_mirror _z
+fff _NoEcho ! -_Layer _Current Annotations _EnterEnd _Dim _Pause _Pause 3/4"
+bbox '_boundingbox
+pm _PackageManager
+sev '_setview
+cd _ClippingDrawings
+ud _updateclippingdrawings
+ar _arrowhead
+pj _project
+ur _unrollsrf
+ca _cap
+av _setdisplaymode _arctic
+fi _fillet
+fc _filletcorners
+at _angle _t
+dr _dimradius
+sp _setpt
+sep _setview _w _p
+d3 _-RunPythonScript "C:\Dev\rhino-scripts\dim_3d.py"
+c1 _cplane _world _top
+c3 _cplane _3point
+za '_zoom _all
+mip _mirror _3point
+co _Connect
+rad _radius
+dia _diameter
+ul _unlock
+dv '_setdisplaymode _darkmonochrome
+dcv '_setdisplaymode _darkcolor
+il _invert _lock
+re _-RunPythonScript "C:\Dev\rhino-scripts\set_color_red.py"
+y _-RunPythonScript "C:\Dev\rhino-scripts\move_to_layer.py"
+ho _HighlightObjectLayers
+oc _OffsetCrvOnSrf
+dc _DisableClippingPlane
+wc _WireCut
+ec _EnableClippingPlane
+po _-RunPythonScript "C:\Dev\rhino-scripts\paste_object_name.py"
