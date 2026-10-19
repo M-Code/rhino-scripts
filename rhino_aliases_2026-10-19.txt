@@ -1,0 +1,94 @@
+﻿z '_Zoom
+s ! _Scale1D
+o ! _Offset
+p ! _Point
+m ! _Move
+u ! _Undo
+c ! _Circle
+w ! _ToggleLeftSidebar
+q ! _Length
+d ! _Dim
+l ! _Line
+e ! _ExtrudeCrv
+t ! _Trim
+bu ! _BooleanUnion
+sa ! _SaveAs
+bs ! _BooleanSplit
+se ! _ScriptEditor
+sc ! _SelColor
+g ! _Group
+h ! _Hide
+sn ! _SelName
+r ! _Rectangle p
+mi ! _Mirror
+pl ! _Plane p
+dd ! _DimDiameter
+ss ! _ShowSelected
+ug ! _Ungroup
+da ! _DimAligned
+sca ! _Scale
+v ! _Volume
+i ! _Isolate
+hd ! _HideInDetail
+sh ! _Show
+zw '_ZoomWindow
+o3 ! _Orient3Pt
+te ! _Text
+r3 ! _Rotate3D
+ex ! _Explode
+ihd ! _Invert _HideInDetail
+gh ! _Grasshopper
+eb ! _ExplodeBlock
+bum ! _BooleanUnion _MergeAllCoplanarFaces
+ro ! _Rotate
+dx ! _Distribute _x
+dy ! _Distribute _y
+dz ! _Distribute _z
+ep ! _EditPythonScript
+fe ! _FilletEdge
+rp ! _RunPythonScript
+bb ! _BoundingBox
+ic ! _InterpCrv
+ps ! _PlanarSrf
+sl ! _SelLast
+os ! _OffsetSrf
+es ! _ExtendSrf
+cl ! _-RunPythonScript "C:\Dev\rhino-scripts\collapse_layers.py"
+db ! _DupBorder
+de ! _DupEdge
+ix ! _Intersect
+ad ! _DimAngle
+so ! _SetObjectDisplayMode _m
+ed ! _ExtendDynamic
+pp ! _PushPull
+pc ! _ProjectToCPlane
+cp ! _ClippingPlane
+to ! _TextObject
+a ! _Angle _t
+mv ! _Move _vertical _pause 0
+cc ! _CloseCrv
+ww ! _ToggleRightSidebar
+s2 ! _Sweep2
+s1 ! _Sweep1
+miy ! _Mirror _y
+miz ! _Mirror _z
+su _-RunPythonScript "C:\Users\travi\AppData\Roaming\McNeel\Rhinoceros\8.0\scripts\select-by-user-text.py" build
+pj ! _Project
+ur ! _UnrollSrf
+ca ! _Cap
+fi ! _Fillet
+fc ! _FilletCorners
+dr ! _DimRadius
+d3 ! _-RunPythonScript "C:\Dev\rhino-scripts\dim_3d.py"
+co ! _Connect
+rad ! _Radius
+dia ! _Diameter
+il ! _Invert _Lock
+re ! _-RunPythonScript "C:\Dev\rhino-scripts\set_color_red.py"
+y ! _-RunPythonScript "C:\Dev\rhino-scripts\move_to_layer.py"
+ho ! _HighlightObjectLayers
+oc ! _OffsetCrvOnSrf
+dc ! _DisableClippingPlane
+wc ! _WireCut
+ec ! _EnableClippingPlane
+mix ! _Mirror _x
