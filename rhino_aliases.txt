@@ -1,6 +1,6 @@
 ﻿Z '_Zoom
-S scale1d
-O offset
+S _Scale1D
+O _Offset
 P _point
 M ! _Move
 U _Undo
@@ -9,40 +9,40 @@ W _ToggleLeftSidebar
 PlugInManager ! _OptionsPage _PlugIns
 AdvancedDisplay ! _OptionsPage _DisplayModes
 Q _Length
-d dim
-l line
-e extrudecrv
-t trim
+d _Dim
+l _Line
+e _ExtrudeCrv
+t _Trim
 bu _booleanunion
-sa saveas
-bs booleansplit
+sa _SaveAs
+bs _BooleanSplit
 se _ScriptEditor
-sc selcolor
-g group
-h hide
-sn selname
-r rectangle p
-mi mirror
-pl plane p
-dd dimdiameter
-sd SetDisplayMode _m
-ss showselected
-ug ungroup
-da dimaligned
-sca scale
-v volume
-doc documentproperties
-i isolate
-dw dotwithdata
-hd hideindetail
-sh show
-zw zoomwindow
-o3 orient3pt
-te text
-r3 rotate3d
-ex explode
-ihd invert _hideindetail
-gh grasshopper
+sc _SelColor
+g _Group
+h _Hide
+sn _SelName
+r _Rectangle p
+mi _Mirror
+pl _Plane p
+dd _DimDiameter
+sd _SetDisplayMode _m
+ss _ShowSelected
+ug _Ungroup
+da _DimAligned
+sca _Scale
+v _Volume
+doc _DocumentProperties
+i _Isolate
+dw _DotWithData
+hd _HideInDetail
+sh _Show
+zw _ZoomWindow
+o3 _Orient3Pt
+te _Text
+r3 _Rotate3D
+ex _Explode
+ihd _Invert _HideInDetail
+gh _Grasshopper
 eb _ExplodeBlock
 bum _BooleanUnion _MergeAllCoplanarFaces
 ro _Rotate
@@ -52,20 +52,20 @@ dz _distribute _z
 ep _EditPythonScript
 fe '_filletedge
 rp '_runpythonscript
-bb !_BoundingBox
+bb ! _BoundingBox
 ic '_InterpCrv
-ps planarsrf
+ps _PlanarSrf
 SL _SelLast
-os offsetsrf
-es extendsrf
+os _OffsetSrf
+es _ExtendSrf
 cl _-RunPythonScript "C:\Dev\rhino-scripts\collapse_layers.py"
-db dupborder
-de DupEdge
-ix intersect
-ad DimAngle
-so SetObjectDisplayMode _m
-ed extenddynamic
-pp pushpull
+db _DupBorder
+de _DupEdge
+ix _Intersect
+ad _DimAngle
+so _SetObjectDisplayMode _m
+ed _ExtendDynamic
+pp _PushPull
 pc _projecttocplane
 cp _ClippingPlane
 to _TextObject
@@ -95,8 +95,6 @@ dia _diameter
 il _invert _lock
 re _-RunPythonScript "C:\Dev\rhino-scripts\set_color_red.py"
 y _-RunPythonScript "C:\Dev\rhino-scripts\move_to_layer.py"
-AE _-RunPythonScript "G:\.shortcut-targets-by-id\1K0RWn5nKzppNzI9fecBnLEhZFazo4P4A\RaiderDrive\MACK\Python Scripts\Anglev2w-txt.py"
-LA _-RunPythonScript "C:\Users\Design\Desktop\Length Attribute.py"
 ho _HighlightObjectLayers
 oc _OffsetCrvOnSrf
 dc _DisableClippingPlane
