@@ -1,4 +1,5 @@
-﻿a ! _Angle _t
+﻿3dp ! _-RunPythonScript "C:\Projects\raider-scripts\rhino-python\export-3dp.py"
+a ! _Angle _t
 ad ! _DimAngle
 bb ! _BoundingBox
 bs ! _BooleanSplit
@@ -18,6 +19,8 @@ dc ! _DisableClippingPlane
 dd ! _DimDiameter
 de ! _DupEdge
 dia ! _Diameter
+dotdrop ! _-RunPythonScript "C:\Projects\raider-scripts\rhino-python\dot-drop.py"
+dotwalk ! _-RunPythonScript "C:\Projects\raider-scripts\rhino-python\dot-walk.py"
 dr ! _DimRadius
 dx ! _Distribute _x
 dy ! _Distribute _y
@@ -29,14 +32,17 @@ ed ! _ExtendDynamic
 ep ! _EditPythonScript
 es ! _ExtendSrf
 ex ! _Explode
+exs ! _ExtrudeSrf
 fc ! _FilletCorners
 fe ! _FilletEdge
 fi ! _Fillet
+floorsupports ! _-RunPythonScript "C:\Projects\raider-scripts\rhino-python\floor-supports.py"
 g ! _Group
 gh ! _Grasshopper
 h ! _Hide
 hd ! _HideInDetail
 ho ! _HighlightObjectLayers
+hs ! _-RunPythonScript "C:\Dev\rhino-scripts\hatch_sim\hatch_sim.py"
 i ! _Isolate
 ic ! _InterpCrv
 ihd ! _Invert _HideInDetail
@@ -45,10 +51,10 @@ ix ! _Intersect
 l ! _Line
 m ! _Move
 mi ! _Mirror
-mix ! _Mirror _x
-miy ! _Mirror _y
-miz ! _Mirror _z
 mv ! _Move _vertical _pause 0
+mx ! _Mirror _x
+my ! _Mirror _y
+mz ! _Mirror _z
 o ! _Offset
 o3 ! _Orient3Pt
 oc ! _OffsetCrvOnSrf
@@ -59,6 +65,8 @@ pj ! _Project
 pl ! _Plane p
 pp ! _PushPull
 ps ! _PlanarSrf
+pullmaster ! _-RunPythonScript "C:\Projects\raider-scripts\ruid\pull_master.py"
+pushmaster ! _-RunPythonScript "C:\Projects\raider-scripts\ruid\push_master.py"
 q ! _Length
 r ! _Rectangle p
 r3 ! _Rotate3D
